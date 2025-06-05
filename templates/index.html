@@ -47,11 +47,21 @@
       backdrop-filter: blur(4px);
     }
 
+    #videoPlayer {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 640px;
+      height: auto;
+      border: 5px solid #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      display: none;
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 1.8rem;
       }
-
       #result {
         font-size: 1.4rem;
         padding: 10px 20px;
@@ -63,18 +73,21 @@
   <h1>Canlı İşaret Dili Tanıma</h1>
   <video id="video" autoplay></video>
   <p id="result">Sonuç bekleniyor...</p>
+  <video id="videoPlayer" controls></video>
 
   <script>
     const video = document.getElementById('video');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const result = document.getElementById('result');
     const socket = io();
 
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         video.srcObject = stream;
-        setInterval(captureFrame, 500);
+        setInterval(captureFrame, 1000);
       })
       .catch(error => {
-        document.getElementById('result').textContent = "Kamera erişimi reddedildi.";
+        result.textContent = "Kamera erişimi reddedildi.";
         console.error(error);
       });
 
@@ -83,18 +96,25 @@
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
-
-      // Aynalama
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0);
-
       const dataURL = canvas.toDataURL('image/jpeg');
       socket.emit('image', dataURL);
     }
 
-    socket.on('result', function(data) {
-      document.getElementById('result').textContent = "Tahmin: " + data;
+    socket.on('play_video', function(data) {
+      result.textContent = "Tahmin: " + data.text;
+      videoPlayer.src = "/" + data.video_path.replace(/\\/g, "/");
+      videoPlayer.style.display = "block";
+      videoPlayer.play();
+    });
+
+    socket.on('no_video', function(data) {
+      result.textContent = "Tahmin: " + data.text + " (Video bulunamadı)";
+      videoPlayer.style.display = "none";
+      videoPlayer.pause();
+      videoPlayer.removeAttribute('src');
     });
   </script>
 </body>
