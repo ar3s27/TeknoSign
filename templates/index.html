@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>İşaret Dili Entegre Sistem</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>İşaret Dili Hareket Tespiti & Video Gösterim</h1>
+    <div class="container">
+        <div class="left">
+            <section id="camera-section">
+                <video id="video" width="640" height="480" autoplay muted></video>
+                <p>Algılanan hareket: <span id="gestureResult">...</span></p>
+            </section>
+        </div>
+        <div class="right">
+            <section id="text-speech-section">
+                <video id="signVideo" width="640" height="480" controls></video>
+                <h2>Yazı veya Ses ile İşaret Dili Videosu</h2>
+                <input type="text" id="textInput" placeholder="Bir kelime yazın" />
+                <button id="sendText">Gönder</button>
+
+                <button id="startSpeech">🎤 Konuşmayı Başlat</button>
+                <button id="stopSpeech" disabled>⏹️ Durdur</button>
+
+                <p>Tanımlanan metin: <span id="recognizedText"></span></p>
+
+                
+            </section>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
