@@ -68,6 +68,21 @@
     let data = await res.json();
     predictionSpan.textContent = data.text || "Tanımlanamadı";
 
+    // --- YENİ: Tahmin edilen kelimeyi otomatik seslendir ---
+    if (data.text && data.text !== "Tanımlanamadı") {
+      const ttsRes = await fetch("/text_to_speech", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: data.text }),
+      });
+      if (ttsRes.ok) {
+        const ttsBlob = await ttsRes.blob();
+        const ttsUrl = URL.createObjectURL(ttsBlob);
+        const tempAudio = new Audio(ttsUrl);
+        tempAudio.play();
+      }
+    }
+
     setTimeout(sendFrame, 1000); // 1 saniyede bir tahmin
   }
 
