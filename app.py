@@ -16,7 +16,7 @@ def index():
     return render_template('index.html')
 
 def find_video_for_word(word):
-    for file in os.listdir(KELIMELER_KLASORU):
+    for file in os.listdir("kelimeler"):
         if file.lower().startswith(word.lower()) and file.lower().endswith(('.mp4', '.avi', '.mkv', '.mov')):
             return os.path.join(KELIMELER_KLASORU, file)
     return None
