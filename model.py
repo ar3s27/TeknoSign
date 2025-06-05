@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2
 
 # Modeli yükle (yol doğruysa)
-model = YOLO("best.pt")
+model = YOLO("models/best.pt")
 
 def predict_gesture(frame):
     # RGB formatına çevir
