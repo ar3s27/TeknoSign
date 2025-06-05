@@ -4,118 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>İşaret Dili Tanıma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    h1 {
-      margin-top: 20px;
-      font-size: 2.5rem;
-      text-shadow: 1px 1px 2px #000;
-    }
-
-    video {
-      margin-top: 20px;
-      width: 90%;
-      max-width: 640px;
-      height: auto;
-      border: 5px solid #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      transform: scaleX(-1);
-    }
-
-    #result {
-      margin-top: 30px;
-      font-size: 2rem;
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 15px 30px;
-      border: 2px solid #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(4px);
-    }
-
-    #videoPlayer {
-      margin-top: 20px;
-      width: 90%;
-      max-width: 640px;
-      height: auto;
-      border: 5px solid #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.8rem;
-      }
-      #result {
-        font-size: 1.4rem;
-        padding: 10px 20px;
-      }
-    }
-  </style>
 </head>
 <body>
   <h1>Canlı İşaret Dili Tanıma</h1>
   <video id="video" autoplay></video>
   <p id="result">Sonuç bekleniyor...</p>
   <video id="videoPlayer" controls></video>
-
-  <script>
-    const video = document.getElementById('video');
-    const videoPlayer = document.getElementById('videoPlayer');
-    const result = document.getElementById('result');
-    const socket = io();
-
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-        setInterval(captureFrame, 1000);
-      })
-      .catch(error => {
-        result.textContent = "Kamera erişimi reddedildi.";
-        console.error(error);
-      });
-
-    function captureFrame() {
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0);
-      const dataURL = canvas.toDataURL('image/jpeg');
-      socket.emit('image', dataURL);
-    }
-
-    socket.on('play_video', function(data) {
-      result.textContent = "Tahmin: " + data.text;
-      videoPlayer.src = "/" + data.video_path.replace(/\\/g, "/");
-      videoPlayer.style.display = "block";
-      videoPlayer.play();
-    });
-
-    socket.on('no_video', function(data) {
-      result.textContent = "Tahmin: " + data.text + " (Video bulunamadı)";
-      videoPlayer.style.display = "none";
-      videoPlayer.pause();
-      videoPlayer.removeAttribute('src');
-    });
-  </script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
