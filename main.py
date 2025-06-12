@@ -26,7 +26,7 @@ def detect():
     image_data = data.get("image", "")
     frame = decode_base64_image(image_data)
     img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    results = model.predict(img_rgb, conf=0.3, verbose=False)
+    results = model.predict(img_rgb, conf=0.5, verbose=False)
 
     for result in results:
         boxes = result.boxes
